@@ -199,6 +199,8 @@ void View::DrawFrames()
                     ImGui::Separator();
                     DrawFrameImage( m_FrameTextureCache, *fi );
                 }
+                ImGui::Separator();
+                TextDisabledUnformatted( "Double-click to reset frame graph zoom" );
                 ImGui::EndTooltip();
 
                 if( io.KeyCtrl )
@@ -212,7 +214,15 @@ void View::DrawFrames()
                 }
                 else
                 {
-                    if( IsMouseClicked( ImGuiMouseButton_Left ) )
+                    if( IsMouseDoubleClicked( ImGuiMouseButton_Left ) )
+                    {
+                        m_viewMode = ViewMode::Paused;
+                        m_viewModeHeuristicTry = false;
+                        m_vd.frameScale = 0;
+                        const int resetOnScreen = ( w - 2 ) / GetFrameWidth( 0 );
+                        m_vd.frameStart = ( total < resetOnScreen ) ? 0 : total - resetOnScreen;
+                    }
+                    else if( IsMouseClicked( ImGuiMouseButton_Left ) )
                     {
                         m_viewMode = ViewMode::Paused;
                         m_viewModeHeuristicTry = false;
